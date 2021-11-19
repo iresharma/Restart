@@ -8,9 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("onboarding") var isOnboarding: Bool = true
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            if(isOnboarding) {
+                OnBoardingView()
+            } else {
+                HomeView()
+            }
+        }
     }
 }
 
