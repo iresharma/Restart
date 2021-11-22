@@ -15,12 +15,13 @@ struct OnBoardingView: View {
 //    MARK: Slide Animation Variable
     private var buttonWidth: Double = UIScreen.main.bounds.width - 80.0
     @State private var buttonOffset: CGFloat = 0
+    @State private var isAnimating: Bool = false
     
     
     
     //    MARK: Body
     var body: some View {
-        ZStack {
+        return ZStack {
             Color("ColorBlue")
             VStack(spacing: 20) {
                 Spacer()
@@ -31,6 +32,9 @@ struct OnBoardingView: View {
             }
         }
         .ignoresSafeArea()
+        .onAppear(perform: {
+            isAnimating = true
+        })
     }
     
     var Header: some View {
@@ -50,6 +54,9 @@ struct OnBoardingView: View {
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
         }
+        .opacity(isAnimating ? 1 : 0)
+        .offset(y: isAnimating ? 0 : -40)
+        .animation(.easeInOut(duration: 1), value: isAnimating)
         
     }
     
@@ -62,6 +69,8 @@ struct OnBoardingView: View {
             Image("character-1")
                 .resizable()
                 .scaledToFit()
+                .opacity(isAnimating ? 1 : 0)
+                .animation(.easeOut(duration: 1.5), value: isAnimating)
         }
     }
     
@@ -110,12 +119,14 @@ struct OnBoardingView: View {
                             
                         })
                         .onEnded({ gesture in
-                            if buttonOffset < (buttonWidth - 80) / 2  {
-                                buttonOffset = 0.0
-                            }
-                            else {
-                                buttonOffset = buttonWidth - 60
-                                isOnboarding = false
+                            withAnimation(Animation.easeOut(duration: 0.8)) {
+                                if buttonOffset < (buttonWidth - 80) / 2  {
+                                    buttonOffset = 0.0
+                                }
+                                else {
+                                    buttonOffset = buttonWidth - 60
+                                    isOnboarding = false
+                                }
                             }
                         })
                 )
@@ -124,6 +135,9 @@ struct OnBoardingView: View {
         }
         .frame(width: buttonWidth, height: 80, alignment: .center)
         .padding()
+        .offset(y: isAnimating ? 0 : 60)
+        .opacity(isAnimating ? 1 : 0)
+        .animation(.easeOut(duration: 1), value: isAnimating)
     }
 }
 

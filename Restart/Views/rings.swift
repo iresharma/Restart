@@ -11,6 +11,7 @@ struct rings: View {
     
     @State var ringColor: Color
     @State var opacity: Double
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         ZStack {
@@ -24,6 +25,12 @@ struct rings: View {
                     .frame(width: 260, height: 260, alignment: .center)
             }
         }
+        .blur(radius: isAnimating ? 1 : 10)
+        .scaleEffect(isAnimating ? 1 : 0.5)
+        .animation(.easeOut(duration: 2), value: isAnimating)
+        .onAppear(perform: {
+            isAnimating = true
+        })
     }
 }
 

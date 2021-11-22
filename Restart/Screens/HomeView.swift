@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @AppStorage("onboarding") var isOnboarding: Bool = false
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -20,6 +21,8 @@ struct HomeView: View {
                     Image("character-2")
                         .resizable()
                         .scaledToFit()
+                        .offset(y: isAnimating ? 35 : -35)
+                        .animation(Animation.easeInOut(duration: 4).repeatForever(), value: isAnimating)
                 }
                 .frame(width: 320)
                 Text("""
@@ -35,7 +38,9 @@ dependent on the intensity of our focus
             }
             Spacer()
             Button(action: {
-                isOnboarding = true
+                withAnimation() {
+                    isOnboarding = true
+                }
             }) {
                 Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
                 Text("Restart")
@@ -43,8 +48,13 @@ dependent on the intensity of our focus
             }
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
-            .controlSize(.mini)
+            .controlSize(.large)
         }
+        .onAppear(perform: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                isAnimating = true
+            })
+        })
     }
 }
 
